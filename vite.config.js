@@ -5,4 +5,10 @@ import react from '@vitejs/plugin-react-swc'
 export default defineConfig({
   plugins: [react()],
   // base: './'
+  // thay đổi đường dẫn tới thư mục 
+  resolve: {
+    alias: [
+      { find: '~', replacement: '/src' }
+    ]
+  }
 })
