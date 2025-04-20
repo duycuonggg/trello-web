@@ -20,8 +20,50 @@ const theme = extendTheme({
         secondary: orange
       }
     }
-  }
+  },
   // other properties
+  // chuyển về chữ bình thường (viết hoa chữ cái đầu)
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none'
+        }
+      }
+    },
+    // chỉnh màu trong input
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main,
+          fontSize: '0.875rem'
+        })
+      }
+    },
+    // sửa trong input
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.main,
+          fontSize: '0.875rem',
+          // màu đường viền
+          '.MuiOutlinedInput-notchedOutline': {
+            borderColor: theme.palette.primary.light
+          },
+          // hover vào màu đường viền hiện lên
+          '&:hover': {
+            '.MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.primary.main
+            }
+          },
+          // khi hover vào đường viện không đậm đường viền lên
+          '& fieldset': {
+            borderWidth: '1px !important'
+          }
+        })
+      }
+    }
+  }
 })
 
 export default theme
