@@ -32,7 +32,7 @@ function Profile() {
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar
-            sx={{ width: 34, height: 34 }}
+            sx={{ width: 36, height: 36 }}
             alt='Cường đẹp trai'
             src='https://scontent-hkg1-1.xx.fbcdn.net/v/t39.30808-6/434676690_442145844943398_3149193981518289588_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=1dvUdTliDOsQ7kNvwGXM4VN&_nc_oc=AdmkdATQKV8Wr3Vnyn2Nq79SJAk-FahGlYYRhZcokMt2cMDFDed05eAAn-N1rLI1KNE&_nc_zt=23&_nc_ht=scontent-hkg1-1.xx&_nc_gid=BC7VHcCQTo0kKWCWQdf58w&oh=00_AfFUI0l2Eob72tPjPvzWyCZKvBVDVOP-1LCneZS-_WG9qA&oe=68051B35'
           />
