@@ -1,25 +1,17 @@
 import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
-import { teal, deepOrange, cyan, orange } from '@mui/material/colors'
+// import { teal, deepOrange, cyan, orange } from '@mui/material/colors'
 
 // Create a theme instance.
 const theme = extendTheme({
+  // kích thước giao diện
   trello: {
     appBarHeight: '58px',
     boardBarHeight: '60px'
   },
+  // màu giao diện
   colorSchemes: {
-    light: {
-      palette: {
-        primary: teal,
-        secondary: deepOrange
-      }
-    },
-    dark: {
-      palette: {
-        primary: cyan,
-        secondary: orange
-      }
-    }
+    light: {},
+    dark: {}
   },
   // other properties
   components: {
@@ -32,11 +24,11 @@ const theme = extendTheme({
             height: '8px'
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#bdc3c7',
+            backgroundColor: '#dcdde1',
             borderRadius: '8px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#00b894'
+            backgroundColor: 'white'
           }
         }
       }
@@ -45,40 +37,30 @@ const theme = extendTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: 'none'
+          textTransform: 'none',
+          // border
+          borderWidth: '0.5px',
+          '&:hover': { borderWidth: '0.5px' }
         }
       }
     },
     // chỉnh màu trong input
     MuiInputLabel: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+        root: {
           fontSize: '0.875rem'
-        })
+        }
       }
     },
     // sửa trong input
     MuiOutlinedInput: {
       styleOverrides: {
-        root: ({ theme }) => ({
-          color: theme.palette.primary.main,
+        root: {
           fontSize: '0.875rem',
-          // màu đường viền
-          '.MuiOutlinedInput-notchedOutline': {
-            borderColor: theme.palette.primary.light
-          },
-          // hover vào màu đường viền hiện lên
-          '&:hover': {
-            '.MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.primary.main
-            }
-          },
-          // khi hover vào đường viện không đậm đường viền lên
-          '& fieldset': {
-            borderWidth: '1px !important'
-          }
-        })
+          '& fieldset': { borderWidth: '0.5px !important' },
+          '&:hover fieldset': { borderWidth: '1px !important' },
+          '&.Mui-focused fieldset': { borderWidth: '1px !important' }
+        }
       }
     }
   }
