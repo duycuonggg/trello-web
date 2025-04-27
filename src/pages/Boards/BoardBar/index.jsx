@@ -37,7 +37,9 @@ function BoardBar() {
       overflow: 'auto',
       borderBottom: '1px solid white',
       paddingX: 2,
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
+      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
+      // thanh scroll thẳng với list card
+      '&::-webkit-scrollbar-track': { m: 2 }
     }}>
       <Box sx={{
         display: 'flex',
@@ -106,7 +108,10 @@ function BoardBar() {
               width: '34px',
               height: '34px',
               fontSize: '16px',
-              border: 'none'
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              '&:first-of-type': { bgcolor: '#a4b0be' }
             }
           }}
         >
