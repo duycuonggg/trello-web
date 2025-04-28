@@ -35,7 +35,6 @@ function BoardBar() {
       justifyContent: 'space-between',
       gap: 2,
       overflow: 'auto',
-      borderBottom: '1px solid white',
       paddingX: 2,
       bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2'),
       // thanh scroll thẳng với list card
