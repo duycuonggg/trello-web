@@ -46,6 +46,10 @@ function Column({ column }) {
     // nếu sử dụng Transform sẽ bị stretch
     transform: CSS.Translate.toString(transform),
     transition,
+    /*
+    chiều cao phải luôn max 100% vì nếu không sẽ lỗi lúc kéo column ngắn qua 1 cái column dài thì phải kéo khu vựa giữa giữa . Lưu ý
+    phải kết hợp với {listeners} nằm ở box chứ không phải ở div ngoài cùng để tránh trường hợp kéo vào vùng xanh
+    */
     height: '100%',
     opacity: isDragging ? 0.5 : undefined
   }
