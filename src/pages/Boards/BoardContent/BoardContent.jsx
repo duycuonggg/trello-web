@@ -14,7 +14,8 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
-  defaultDropAnimationSideEffects
+  defaultDropAnimationSideEffects,
+  closestCorners
 } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
@@ -43,6 +44,7 @@ function BoardContent({ board }) {
   const [activeDragItemId, setActiveDragItemId] = useState([null])
   const [activeDragItemType, setActiveDragItemType] = useState([null])
   const [activeDragItemData, setActiveDragItemData] = useState([null])
+  const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState([null])
 
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -62,6 +64,11 @@ function BoardContent({ board }) {
     setActiveDragItemId(event?.active?.id)
     setActiveDragItemType(event?.active?.data?.current?.columnId ? ACTIVE_DRAG_ITEM_TYPE.CARD : ACTIVE_DRAG_ITEM_TYPE.COLUMN)
     setActiveDragItemData(event?.active?.data?.current)
+
+    // nếu là hành động kéo card thì mới thực hiện những hành động set giá trị oldColumn
+    if (event?.active?.data?.current?.columnId) {
+      setOldColumnWhenDraggingCard(findColumnByCardId(event?.active?.id))
+    }
   }
 
   // trigger (kích hoạt) trong quá trình drag (kéo) 1 phần tử
@@ -136,45 +143,98 @@ function BoardContent({ board }) {
 
   const handleDragEnd = (event) => {
     // console.log('handleDragEnd: ', event)
-
-    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
-      // console.log('hành động kéo thả card - tạm thời không làm gì')
-      return
-    }
-
     const { active, over } = event
 
     // kiểm tra nếu không tồn tại over (kéo linh tinh ra ngoài thì return luôn tránh lỗi)
     if (!over) return
 
-    // nếu vị trí sau khi kéo thả khác với vị trí ban đầu
-    if (active.id !== over.id) {
-      // lấy vị trí cũ
-      const oldIndex = orderedColumns.findIndex(c => c._id === active.id)
-      // lấy vị trí mới
-      const newIndex = orderedColumns.findIndex(c => c._id === over.id)
+    // xử lý kéo thả cards
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
+      // activeDraggingCard: là cái card đang được kéo
+      const { id: activeDraggingCardId, data: { current: activeDraggingCardData } } = active
+      // overCard: là cái card đang tương tác trên hoặc dưới so với cái card đang được kéo ở trên
+      const { id: overCardId } = over
 
-      const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
+      // tìm 2 cái column của cardId
+      const activeColumn = findColumnByCardId(activeDraggingCardId)
+      const overColumn = findColumnByCardId(overCardId)
 
-      // xử lí gọi API
-      // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-      // console.log('dndOrderedColumns: ', dndOrderedColumns)
-      // console.log('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
+      // nếu không tồn tại 1 trong 2 column thì không làm gì hết, tránh crash trang web
+      if (!activeColumn || !overColumn) return
 
-      // cập nhật lại state ban đầu sau khi đã kéo thả
-      setOrderedColumns(dndOrderedColumns)
+      /*
+      hành động kéo thả giữa 2 column khác nhau
+      phải dùng tới activeDragItemData.columnId hoặc oldColumnWhenDraggingCard._id chứ không phải activeData trong scope handleDragEnd
+      này vì sau khi đi qua onDragOver tới đây là state của card đã bị cập nhật 1 lần
+      */
+      if (oldColumnWhenDraggingCard._id !== overColumn._id) {
+        //
+      } else {
+        // hành động kéo thả trong cùng 1 column
+
+        // lấy vị trí cũ oldColumnWhenDraggingCard
+        const oldCardIndex = oldColumnWhenDraggingCard?.cards?.findIndex(c => c._id === activeDragItemId)
+        // lấy vị trí mới
+        const newCardIndex = overColumn?.cards?.findIndex(c => c._id === overCardId)
+
+        // dùng arrayMove vì kéo card trong 1 cái column thì tương tự với logic kéo column trong 1 cái board content
+        const dndOrderedCards = arrayMove(oldColumnWhenDraggingCard?.cards, oldCardIndex, newCardIndex)
+
+        setOrderedColumns(prevColumns => {
+          // clone mảng OrderedColumnState cũ ra 1 cái mới để xử lí data rồi return - cập nhật lại OrderedColumnState mới
+          const nextColumns = cloneDeep(prevColumns)
+
+          // tìm tới cái column đang thả
+          const targetColumn = nextColumns.find(column => column._id === overColumn._id)
+
+          // cập nhật lại 2 giá trị mới là card và cardOrderIds trong cái targetColumn
+          targetColumn.cards = dndOrderedCards
+          targetColumn.cardOrderIds = dndOrderedCards.map(card => card._id)
+
+          console.log('targetColumn', targetColumn)
+
+          return nextColumns
+        })
+      }
     }
 
+    // xử lý kéo thả columns
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      console.log('hành động kéo thả column - tạm thời không làm gì')
+      // nếu vị trí sau khi kéo thả khác với vị trí ban đầu
+      if (active.id !== over.id) {
+        // lấy vị trí cũ
+        const oldColumnIndex = orderedColumns.findIndex(c => c._id === active.id)
+        // lấy vị trí mới
+        const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
+
+        const dndOrderedColumns = arrayMove(orderedColumns, oldColumnIndex, newColumnIndex)
+
+        // xử lí gọi API
+        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+        // console.log('dndOrderedColumns: ', dndOrderedColumns)
+        // console.log('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
+
+        // cập nhật lại state ban đầu sau khi đã kéo thả
+        setOrderedColumns(dndOrderedColumns)
+      }
+    }
+
+    // những giá trị này sau khi kéo thả luôn phải đưa về giá trị null mặc định ban đầu
     setActiveDragItemId(null)
     setActiveDragItemType(null)
     setActiveDragItemData(null)
+    setOldColumnWhenDraggingCard(null)
   }
 
   // animation khi drop phần tử
   const customDropAnimation = { sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.5' } } }) }
   return (
     <DndContext
+      // cảm biến
       sensors={sensors}
+      // thuật toán phát hiện va chạm
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
