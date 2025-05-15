@@ -280,29 +280,29 @@ function BoardContent({ board }) {
 
     // tìm các điểm giao nhau, va chạm - intersection với con trỏ
     const pointerInterSection = pointerWithin(args)
+    // mảng rỗng (khi kéo ra ngoài) thì return luôn
+    if (!pointerInterSection?.length) return
 
     // thuật toán phát hiện va chạm sẽ trả về 1 mảng các va chạm ở đây
-    const intersection = !!pointerInterSection?.length
-      ? pointerInterSection
-      : rectIntersection(args)
+    // const intersection = !!pointerInterSection?.length
+    //   ? pointerInterSection
+    //   : rectIntersection(args)
 
-    // tìm overId đầu tiên trong đám intersection
-    let overId = getFirstCollision(intersection, 'id')
+    // tìm overId đầu tiên trong đám pointerInterSection
+    let overId = getFirstCollision(pointerInterSection, 'id')
     if (overId) {
       /*
       nếu cái over là column thì sẽ tìm tới cái cardId gần nhất bên trong khu vực và chạm đó dựa vào thuật toán phát hiện va chạm
-      closesCenter (mượt hơn) hoặc closesCorner
+      closesCenter hoặc closesCorner (mượt hơn)
       */
       const checkColumn = orderedColumns.find(column => column._id === overId)
       if (checkColumn) {
-        console.log('before: ', overId)
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers: args.droppableContainers.filter(container => {
             return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id))
           })
         })[0]?.id
-        console.log('after: ', overId)
       }
 
       lastOverId.current = overId
