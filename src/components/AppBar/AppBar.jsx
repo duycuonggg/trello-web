@@ -14,13 +14,13 @@ import TextField from '@mui/material/TextField'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Badge from '@mui/material/Badge'
 import Tooltip from '@mui/material/Tooltip'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+// import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import Profile from './Menus/Profile'
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd'
 import InputAdornment from '@mui/material/InputAdornment'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-
+import { Link } from 'react-router-dom'
 function AppBar() {
   // set textfield
   const [searchValue, setSearchValue] = useState('')
@@ -43,10 +43,12 @@ function AppBar() {
     }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
         <AppsIcon sx={{ color: 'white' }} />
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} />
-          <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>Trello</Typography>
-        </Box>
+        <Link to='/'>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <SvgIcon component={TrelloIcon} fontSize='small' inheritViewBox sx={{ color: 'white' }} />
+            <Typography variant='span' sx={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'white' }}>Trello</Typography>
+          </Box>
+        </Link>
         {/* responsive */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
           <Workspaces />
@@ -117,9 +119,9 @@ function AppBar() {
           </Badge>
         </Tooltip>
 
-        <Tooltip title="Help">
+        {/* <Tooltip title="Help">
           <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'white' }} />
-        </Tooltip>
+        </Tooltip> */}
 
         <Profile />
       </Box>
