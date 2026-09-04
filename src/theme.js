@@ -28,9 +28,12 @@ const theme = extendTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
+          '*': {
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          },
           '*::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px'
+            display: 'none'
           },
           '*::-webkit-scrollbar-thumb': {
             backgroundColor: '#dcdde1',
